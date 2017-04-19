@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {bindActionCreators} from "redux";
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ListView } from 'react-native';
 
-import {changeText} from "../actions/index2";
 import {fetchData} from "../actions/index";
 
 class Main extends Component {
@@ -11,33 +10,47 @@ class Main extends Component {
   constructor(props)
   {
     super(props);
-    this.changeText = this.changeText.bind(this);
     this.getData = this.getData.bind(this);
+    this.renderProduct = this.renderProduct.bind(this);
   }
   getData() {
-    const URL = "https://myshoppify.herokuapp.com/products/products.json";
-    console.log("THIS IS DATA <<<<<<<<<<")
+    const URL = "https://myshoppify.herokuapp.com/products/products.json";  
     this.props.fetchProducts(URL)
-    console.log()
   }
   changeText()
   {
     this.props.changeText("Changed Text");
   }
-
-  render() {
-
+  renderProduct(item){
     return (
-      <View style={styles.container}>
-        <Text style={{fontSize:50}}>
-          {this.props.productsData.data}
-          {this.getData}
+      <View >
+        <Image source={{uri: item.image.src}} style={{width: 200, height: 200}} />
+        <Text>
+          ${item.variants[0].price}
         </Text>
-        <TouchableOpacity onPress={this.changeText}>
-          <Text>
-            Change text
+        <TouchableOpacity>
+          <Text style={{fontSize: 20, fontWeight:"bold", backgroundColor: 'green', textAlign: "center"}}>
+            Buy
           </Text>
         </TouchableOpacity>
+      </View>)
+  }
+  render() {
+
+    var products = (this.props.productsData.data.products === undefined)? []: this.props.productsData.data.products;
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPress={this.getData}>
+          <Text style={{fontSize: 20, fontWeight:"bold"}}>
+            Click Me to Show Products
+          </Text>
+        </TouchableOpacity>
+         <ListView
+          dataSource={ds.cloneWithRows(products)}
+          renderRow={(item) => this.renderProduct(item)}
+          />  
       </View>
     );
   }
@@ -60,7 +73,6 @@ mapStateToProps = (state) => {
 
 mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    changeText: changeText,
     fetchProducts: fetchData
    }, dispatch)
 }
