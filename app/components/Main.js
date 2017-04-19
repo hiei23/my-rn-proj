@@ -24,6 +24,9 @@ class Main extends Component {
   renderProduct(item){
     return (
       <View >
+        <Text>
+          {item.title}
+        </Text>
         <Image source={{uri: item.image.src}} style={{width: 200, height: 200}} />
         <Text>
           ${item.variants[0].price}
