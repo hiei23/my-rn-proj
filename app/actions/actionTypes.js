@@ -1,0 +1,3 @@
+export const RECEIVED_ERROR = 'RECEIVED_ERROR';
+export const REQUEST_DATA = 'REQUEST_DATA';
+export const RECEIVED_DATA = 'RECEIVED_DATA';
